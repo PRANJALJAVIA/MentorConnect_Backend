@@ -155,4 +155,36 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
+router.get('/checklogin', authTokenHandler, async (req, res, next) => {
+    res.json({
+        ok: req.ok,
+        message: req.message,
+        userId: req.userId
+    })
+});
+
+router.get('/getuser', authTokenHandler, async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userId).select(-password);
+
+        if(!user) {
+            return responseFunction(res, 400, "User not found", null, false);
+        }
+        return responseFunction(res, 200, "User found", user, true);
+    }
+    catch(err){
+        return responseFunction(res, 500, "Internal server error", err, false);
+    }
+});
+
+router.get('/logout', authTokenHandler, async (req, res, next) => {
+    res.clearCookie('authToken');
+    res.clearCookie('refreshToken');
+
+    res.json({
+        ok: true,
+        message: 'Logged out successfully'
+    })
+})
+
 module.exports = router
