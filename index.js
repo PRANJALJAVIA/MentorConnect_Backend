@@ -36,11 +36,11 @@ app.use(cookieParser({
 }));
 
 const authRoutes = require('./routes/authRoutes');
-// const calssroomRoutes = require('./routes/classroomRoutes');
+const calssroomRoutes = require('./routes/classroomRoutes');
 
 // routes
 app.use('/auth', authRoutes)
-// app.use('/class', calssroomRoutes)
+app.use('/class', calssroomRoutes)
 
 app.get('/', (req, res)=>{
     res.send('JP');
