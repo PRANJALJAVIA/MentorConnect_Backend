@@ -164,8 +164,7 @@ router.get('/checklogin', authTokenHandler, async (req, res, next) => {
 
 router.get('/getuser', authTokenHandler, async (req, res, next) => {
     try {
-        const user = await userModel.findById(req.userId).select(-password);
-
+        const user = await userModel.findById(req.userId).select('-password');
         if(!user) {
             return responseFunction(res, 400, "User not found", null, false);
         }
