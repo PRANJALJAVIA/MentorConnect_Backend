@@ -118,7 +118,7 @@ router.post('/register', async(req, res) => {
         res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true, sameSite: 'none'});
 
         user.password = undefined;
-        return responseFunction(res, 200, "Registered successfully", {user, authToken, refreshToken}, true);
+        return responseFunction(res, 201, "Registered successfully", {user, authToken, refreshToken}, true);
     }
     catch(err){
         console.log(err);
@@ -130,24 +130,23 @@ router.post('/login', async (req, res, next) => {
     try{
         const {email, password} = req.body;
         const user = await userModel.findOne({email: email});
-
+        
         if(!user){
             return responseFunction(res, 400, "Invalid Credentials", null, false);
         }
         const isMatch = await bcrypt.compare(password, user.password);
-
+        
         if(!isMatch) {
             return responseFunction(res, 400, "Invalid Credentials", null, false);
         }
-        
+
         const authToken = jwt.sign({userId: user._id}, process.env.JWT_SECRET_KEY, {expiresIn: '1d'});
-        const refreshToken = jwt.sign({userId: user._id}, process.env.JWT_REFRESH_SECRET_KEY, {expiresIn: '10d'});
+        const refreshToken = jwt.sign({userId: user._id}, process.env.JWT_REFRESH_SECERET_KEY, {expiresIn: '10d'});
 
         res.cookie('authToken', authToken, {httpOnly: true, secure: true, sameSite: 'none'});
         res.cookie('refreshToken', refreshToken, {httpOnly: true, secure: true, sameSite: 'none'});
-
-        user.password = undefined;
-
+        
+        user.password = "";
         return responseFunction(res, 200, "Logged in successfully", {user, authToken, refreshToken}, true);
     }
     catch(err){
@@ -180,7 +179,7 @@ router.get('/getuser', authTokenHandler, async (req, res, next) => {
 router.get('/logout', authTokenHandler, async (req, res, next) => {
     res.clearCookie('authToken');
     res.clearCookie('refreshToken');
-
+    localStorage.removeItem("user");
     res.json({
         ok: true,
         message: 'Logged out successfully'
