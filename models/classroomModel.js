@@ -15,11 +15,13 @@ const ClassroomSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
-    students: [{
+    students: [String],
+    posts: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-    }],
-}, {timestamps: true});
+        ref: 'Post', // Reference to the Post model
+    }]
+}, { timestamps: true });
+
 
 const Classroom = mongoose.model('Classroom', ClassroomSchema)
 

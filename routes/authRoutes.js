@@ -1,6 +1,6 @@
 const express = require('express');
 const verificationModel = require('../models/verificationModel');
-const responseFunction = require('../utils/responseFunction');
+const responseFunction = require('../utils/responseFunction').default;
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 dotenv.config();
